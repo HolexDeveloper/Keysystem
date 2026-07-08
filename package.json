@@ -1,0 +1,28 @@
+{
+  "name": "holexss-keysystem-2026",
+  "version": "2.4.0",
+  "description": "HolexSS Keysystem 2026 — Secure key verification with Work.ink gating and Railway-ready backend.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "key-system",
+    "workink",
+    "railway",
+    "authentication",
+    "express",
+    "verification"
+  ],
+  "author": "HolexSS",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2"
+  }
+}

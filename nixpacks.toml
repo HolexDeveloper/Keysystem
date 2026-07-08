@@ -1,0 +1,21 @@
+# Nixpacks build configuration for HolexSS Keysystem 2026
+# https://nixpacks.com/docs/configuration/file
+
+[phases.setup]
+nixPkgs = ["nodejs_20"]
+nixOverlays = []
+nixCacheKey = ""
+
+[phases.install]
+cmds = ["npm ci --omit=dev || npm install --omit=dev"]
+cacheDirs = ["/root/.npm"]
+
+[phases.build]
+cmds = ["echo 'No build step required for HolexSS Keysystem'"]
+
+[start]
+cmd = "node server.js"
+
+[variables]
+NODE_ENV = "production"
+NPM_CONFIG_PRODUCTION = "true"

@@ -1,0 +1,2905 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="HolexSS Keysystem 2026 — Secure key verification system with Work.ink integration and one-click Railway deployment. Verify users, generate keys, control access.">
+<meta name="theme-color" content="#060608">
+<meta property="og:title" content="HolexSS Keysystem 2026">
+<meta property="og:description" content="Secure key verification with Work.ink gating and Railway-ready backend.">
+<meta property="og:type" content="website">
+<title>HolexSS Keysystem 2026 — Secure Key Verification</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+/* ═══════════════════════════════════════════════════════════════
+   RESET & BASE
+   ═══════════════════════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg-base: #060608;
+  --bg-card: #0c0c10;
+  --bg-card-hover: #101015;
+  --bg-elev: #0a0a0e;
+  --accent: #00f0ff;
+  --accent-dim: #0088aa;
+  --accent-deep: #006680;
+  --text: #e8e8ec;
+  --text-muted: #6b6b7b;
+  --text-subtle: #4a4a5a;
+  --success: #00e676;
+  --error: #ff3d57;
+  --warning: #ffab00;
+  --border: rgba(255,255,255,0.05);
+  --border-hover: rgba(255,255,255,0.08);
+  --border-strong: rgba(255,255,255,0.12);
+  --radius: 16px;
+  --radius-sm: 10px;
+  --radius-xs: 8px;
+  --shadow-card: 0 4px 24px rgba(0,0,0,0.4), 0 1px 2px rgba(0,0,0,0.3);
+  --shadow-glow: 0 0 30px rgba(0,240,255,0.15);
+  --font-sans: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+  --transition: 0.2s ease;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 80px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--bg-base);
+  color: var(--text);
+  line-height: 1.7;
+  font-size: 1rem;
+  overflow-x: hidden;
+  min-height: 100vh;
+  position: relative;
+}
+
+/* Layered background */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 25%, rgba(0,240,255,0.035) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 85% 90%, rgba(0,240,255,0.02) 0%, transparent 60%),
+    var(--bg-base);
+  pointer-events: none;
+}
+
+/* Subtle noise overlay */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.4 0'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.5'/></svg>");
+  opacity: 0.025;
+  pointer-events: none;
+  mix-blend-mode: overlay;
+}
+
+#particles {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.bg-geometry {
+  position: absolute;
+  top: 60vh;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 900px;
+  height: 900px;
+  opacity: 0.025;
+  pointer-events: none;
+  z-index: 0;
+}
+
+::selection { background: rgba(0,240,255,0.25); color: var(--text); }
+
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+input { font-family: inherit; }
+img, svg { display: block; max-width: 100%; }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: var(--bg-base); }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 5px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.15); }
+
+/* Focus visible */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   TYPOGRAPHY
+   ═══════════════════════════════════════════════════════════════ */
+h1, h2, h3, h4 { line-height: 1.15; letter-spacing: -0.02em; font-weight: 700; }
+h1 { font-size: clamp(2.2rem, 5vw, 3.5rem); }
+h2 { font-size: clamp(1.6rem, 3vw, 2.2rem); }
+h3 { font-size: clamp(1.1rem, 2vw, 1.4rem); }
+.mono { font-family: var(--font-mono); }
+.label-caps {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--text-subtle);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   LAYOUT HELPERS
+   ═══════════════════════════════════════════════════════════════ */
+.container { width: 100%; max-width: 1180px; margin: 0 auto; padding: 0 clamp(1.5rem, 4vw, 3rem); position: relative; z-index: 1; }
+.section { padding: clamp(4rem, 8vw, 8rem) 0; position: relative; z-index: 1; }
+.section-header { text-align: center; margin-bottom: 3rem; }
+.section-header h2 { margin-bottom: 0.75rem; }
+.section-header p { color: var(--text-muted); font-size: 0.95rem; max-width: 560px; margin: 0 auto; }
+.accent { color: var(--accent); }
+.gradient-text {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dim) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   REVEAL ANIMATIONS
+   ═══════════════════════════════════════════════════════════════ */
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal-stagger > * {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+.reveal-stagger.visible > * { opacity: 1; transform: translateY(0); }
+.reveal-stagger.visible > *:nth-child(1) { transition-delay: 0ms; }
+.reveal-stagger.visible > *:nth-child(2) { transition-delay: 80ms; }
+.reveal-stagger.visible > *:nth-child(3) { transition-delay: 160ms; }
+.reveal-stagger.visible > *:nth-child(4) { transition-delay: 240ms; }
+.reveal-stagger.visible > *:nth-child(5) { transition-delay: 320ms; }
+.reveal-stagger.visible > *:nth-child(6) { transition-delay: 400ms; }
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   BUTTONS
+   ═══════════════════════════════════════════════════════════════ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: var(--font-sans);
+  font-weight: 500;
+  font-size: 0.9rem;
+  padding: 12px 24px;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition);
+  cursor: pointer;
+  border: 1px solid transparent;
+  white-space: nowrap;
+  position: relative;
+  overflow: hidden;
+}
+.btn svg { width: 16px; height: 16px; flex-shrink: 0; }
+.btn:active { transform: scale(0.98); }
+
+.btn-primary {
+  background: var(--accent);
+  color: var(--bg-base);
+  font-weight: 600;
+}
+.btn-primary:hover {
+  box-shadow: 0 0 30px rgba(0,240,255,0.3);
+  transform: translateY(-1px);
+}
+.btn-primary:active { transform: translateY(0) scale(0.98); }
+
+.btn-secondary {
+  background: transparent;
+  border-color: rgba(255,255,255,0.1);
+  color: var(--text);
+}
+.btn-secondary:hover {
+  border-color: rgba(255,255,255,0.25);
+  background: rgba(255,255,255,0.03);
+}
+
+.btn-outline-accent {
+  background: transparent;
+  border-color: rgba(0,240,255,0.3);
+  color: var(--accent);
+}
+.btn-outline-accent:hover {
+  border-color: var(--accent);
+  background: rgba(0,240,255,0.05);
+  box-shadow: 0 0 20px rgba(0,240,255,0.1);
+}
+
+.btn-ghost {
+  background: rgba(255,255,255,0.05);
+  border-color: rgba(255,255,255,0.1);
+  color: var(--text);
+}
+.btn-ghost:hover {
+  border-color: rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.08);
+}
+
+.btn-text {
+  background: transparent;
+  color: var(--text-subtle);
+  font-size: 0.85rem;
+  padding: 8px 12px;
+}
+.btn-text:hover { color: var(--text); }
+
+.btn:disabled {
+  background: rgba(255,255,255,0.05) !important;
+  color: var(--text-subtle) !important;
+  cursor: not-allowed !important;
+  box-shadow: none !important;
+  transform: none !important;
+  border-color: transparent !important;
+}
+.btn:disabled:hover { transform: none !important; }
+
+.btn-lg { padding: 14px 32px; font-size: 0.95rem; height: 48px; }
+.btn-block { width: 100%; }
+
+/* ═══════════════════════════════════════════════════════════════
+   CARDS
+   ═══════════════════════════════════════════════════════════════ */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-card);
+  transition: border-color var(--transition);
+  position: relative;
+}
+.card:hover { border-color: var(--border-hover); }
+
+/* ═══════════════════════════════════════════════════════════════
+   NAVBAR
+   ═══════════════════════════════════════════════════════════════ */
+nav.navbar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 64px;
+  z-index: 1000;
+  background: rgba(6,6,8,0.8);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  transition: background var(--transition), box-shadow var(--transition);
+}
+nav.navbar.scrolled {
+  background: rgba(6,6,8,0.95);
+  box-shadow: 0 1px 12px rgba(0,0,0,0.4);
+}
+.nav-inner {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 clamp(1.5rem, 4vw, 3rem);
+  max-width: 100%;
+}
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.15rem;
+  letter-spacing: 0.1em;
+}
+.nav-brand .brand-icon {
+  width: 28px; height: 28px;
+  color: var(--accent);
+  filter: drop-shadow(0 0 8px rgba(0,240,255,0.4));
+}
+.nav-brand .brand-name { font-weight: 700; color: var(--text); }
+.nav-brand .brand-suffix { font-weight: 300; color: var(--text-muted); }
+
+.nav-center {
+  display: flex;
+  gap: 28px;
+  align-items: center;
+}
+.nav-link {
+  font-size: 0.85rem;
+  font-weight: 400;
+  color: var(--text-muted);
+  position: relative;
+  padding: 4px 0;
+  transition: color var(--transition);
+}
+.nav-link::after {
+  content: '';
+  position: absolute;
+  left: 0; bottom: -2px;
+  width: 100%; height: 1px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--transition);
+}
+.nav-link:hover { color: var(--text); }
+.nav-link:hover::after { transform: scaleX(1); }
+.nav-link.active { color: var(--accent); }
+.nav-link.active::after { transform: scaleX(1); }
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.status-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+.status-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--success);
+  box-shadow: 0 0 8px rgba(0,230,118,0.6);
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.3); opacity: 0.5; }
+}
+
+.btn-railway {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  padding: 6px 14px;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: var(--radius-xs);
+  color: var(--text);
+  transition: all var(--transition);
+  background: transparent;
+}
+.btn-railway:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.btn-railway svg { width: 14px; height: 14px; }
+
+.nav-mobile-toggle {
+  display: none;
+  width: 36px; height: 36px;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-xs);
+  background: transparent;
+  border: 1px solid var(--border);
+}
+.nav-mobile-toggle svg { width: 18px; height: 18px; color: var(--text); }
+
+.mobile-menu {
+  position: fixed;
+  top: 64px; right: 0;
+  width: 280px;
+  max-width: 90vw;
+  background: rgba(10,10,14,0.98);
+  backdrop-filter: blur(20px);
+  border-left: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 24px;
+  transform: translateX(100%);
+  transition: transform 0.3s ease;
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.mobile-menu.open { transform: translateX(0); }
+.mobile-menu .nav-link { font-size: 1rem; padding: 8px 0; }
+
+@media (max-width: 768px) {
+  .nav-center { display: none; }
+  .nav-mobile-toggle { display: inline-flex; }
+  .status-badge .status-text { display: none; }
+  .btn-railway { display: none; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   HERO
+   ═══════════════════════════════════════════════════════════════ */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 100px clamp(1.5rem, 4vw, 3rem) 60px;
+  position: relative;
+}
+.hero-content {
+  max-width: 720px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  border: 1px solid rgba(0,240,255,0.2);
+  background: rgba(0,240,255,0.05);
+  color: var(--accent);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  border-radius: 999px;
+  margin-bottom: 28px;
+  position: relative;
+  overflow: hidden;
+}
+.hero-badge::after {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 50%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(0,240,255,0.2), transparent);
+  animation: shimmer 3s infinite;
+}
+@keyframes shimmer {
+  0% { left: -100%; }
+  100% { left: 200%; }
+}
+.hero h1 {
+  margin-bottom: 24px;
+  line-height: 1.1;
+  text-shadow: 0 0 60px rgba(0,240,255,0.1);
+}
+.hero h1 .line-1 { font-weight: 700; color: var(--text); display: block; }
+.hero h1 .line-2 { font-weight: 300; color: var(--accent); display: block; }
+.hero-sub {
+  font-size: 1.05rem;
+  color: var(--text-muted);
+  line-height: 1.8;
+  max-width: 560px;
+  margin: 0 auto 36px;
+}
+.hero-cta {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 56px;
+}
+.hero-stats {
+  display: flex;
+  gap: 0;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.hero-stat {
+  padding: 0 28px;
+  text-align: center;
+  position: relative;
+}
+.hero-stat:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  right: 0; top: 50%;
+  transform: translateY(-50%);
+  width: 1px; height: 32px;
+  background: rgba(255,255,255,0.06);
+}
+.hero-stat .num {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--accent);
+  font-family: var(--font-mono);
+}
+.hero-stat .lbl {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+.scroll-indicator {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--text-subtle);
+  animation: bounce 2s ease-in-out infinite;
+}
+.scroll-indicator svg { width: 24px; height: 24px; }
+@keyframes bounce {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(8px); }
+}
+@media (max-width: 600px) {
+  .hero-stat { padding: 0 16px; }
+  .hero-stat:not(:last-child)::after { height: 24px; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   FEATURES STRIP
+   ═══════════════════════════════════════════════════════════════ */
+.features-strip {
+  border-top: 1px solid rgba(255,255,255,0.03);
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+  background: rgba(0,0,0,0.2);
+  padding: 40px 0;
+}
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 32px;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 clamp(1.5rem, 4vw, 3rem);
+}
+.feature {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.feature svg {
+  width: 22px; height: 22px;
+  color: var(--accent);
+  margin-bottom: 4px;
+}
+.feature-title {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text);
+}
+.feature-desc {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+@media (max-width: 768px) {
+  .features-grid { grid-template-columns: repeat(2, 1fr); gap: 24px; }
+}
+@media (max-width: 480px) {
+  .features-grid { grid-template-columns: 1fr; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   KEY SYSTEM — STEPPER
+   ═══════════════════════════════════════════════════════════════ */
+#key-system {
+  background:
+    repeating-linear-gradient(0deg, transparent, transparent 60px, rgba(255,255,255,0.008) 60px, rgba(255,255,255,0.008) 61px);
+}
+.stepper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 500px;
+  margin: 0 auto 3rem;
+  gap: 0;
+}
+.step-circle {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid rgba(255,255,255,0.1);
+  background: transparent;
+  color: var(--text-subtle);
+  font-size: 0.85rem;
+  font-weight: 600;
+  font-family: var(--font-mono);
+  transition: all var(--transition);
+  flex-shrink: 0;
+  position: relative;
+}
+.step-circle.active {
+  border-color: var(--accent);
+  color: var(--accent);
+  box-shadow: 0 0 16px rgba(0,240,255,0.2);
+}
+.step-circle.completed {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--bg-base);
+}
+.step-circle.completed svg { width: 16px; height: 16px; }
+.step-line {
+  flex: 1;
+  height: 2px;
+  background: rgba(255,255,255,0.06);
+  margin: 0 8px;
+  transition: background var(--transition);
+  position: relative;
+  top: 18px;
+}
+.step-line.active { background: var(--accent); }
+.step-label {
+  position: absolute;
+  top: 44px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.75rem;
+  color: var(--text-subtle);
+  white-space: nowrap;
+  transition: color var(--transition);
+}
+.step-circle.active + .step-label,
+.step-circle.active .step-label,
+.step-label.active { color: var(--accent); }
+.step-label.completed { color: var(--text); }
+.stepper-wrap {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  max-width: 500px;
+  margin: 0 auto 3rem;
+}
+.stepper-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+.stepper-item:not(:last-child) .step-line-2 {
+  width: 60px;
+  height: 2px;
+  background: rgba(255,255,255,0.06);
+  margin-top: 18px;
+  transition: background var(--transition);
+}
+.stepper-item:not(:last-child) .step-line-2.active { background: var(--accent); }
+.stepper-item .step-label-text {
+  margin-top: 10px;
+  font-size: 0.75rem;
+  color: var(--text-subtle);
+  transition: color var(--transition);
+}
+.stepper-item.active .step-label-text { color: var(--accent); }
+.stepper-item.completed .step-label-text { color: var(--text); }
+
+@media (max-width: 480px) {
+  .step-circle { width: 28px; height: 28px; font-size: 0.75rem; }
+  .stepper-item:not(:last-child) .step-line-2 { width: 32px; }
+  .stepper-item .step-label-text { font-size: 0.65rem; }
+}
+
+/* Step Card */
+.step-card-wrap {
+  max-width: 560px;
+  margin: 0 auto;
+  position: relative;
+}
+.step-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-card);
+  padding: clamp(1.75rem, 4vw, 2.5rem);
+  position: relative;
+  overflow: hidden;
+  min-height: 360px;
+}
+.step-number-bg {
+  position: absolute;
+  top: 8px;
+  right: 20px;
+  font-size: 6rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.025);
+  line-height: 1;
+  pointer-events: none;
+  font-family: var(--font-mono);
+  letter-spacing: -0.05em;
+}
+.step-content {
+  position: relative;
+  z-index: 1;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+.step-content.fade-out { opacity: 0; transform: translateY(-10px); }
+.step-content.fade-in { opacity: 0; transform: translateY(10px); animation: fadeInUp 0.3s ease forwards; }
+.step-heading { margin-bottom: 8px; }
+.step-subtext {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+}
+
+/* Input Field */
+.input-wrap {
+  position: relative;
+  margin-bottom: 8px;
+}
+.input-wrap .input-icon {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 18px; height: 18px;
+  color: var(--text-subtle);
+  transition: color var(--transition);
+  pointer-events: none;
+}
+.input-field {
+  width: 100%;
+  height: 52px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: var(--radius-sm);
+  padding: 0 16px 0 48px;
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  color: var(--text);
+  transition: all var(--transition);
+  outline: none;
+}
+.input-field::placeholder { color: var(--text-subtle); }
+.input-field:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(0,240,255,0.1);
+}
+.input-field:focus + .input-icon,
+.input-wrap:focus-within .input-icon { color: var(--accent); }
+.input-field.error {
+  border-color: var(--error);
+  box-shadow: 0 0 0 3px rgba(255,61,87,0.1);
+}
+.input-info {
+  font-size: 0.75rem;
+  color: var(--text-subtle);
+  margin-top: 8px;
+}
+.input-error-msg {
+  font-size: 0.75rem;
+  color: var(--error);
+  margin-top: 8px;
+  display: none;
+}
+.input-error-msg.show { display: block; }
+
+/* Work.ink Button */
+.workink-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 56px;
+  padding: 0 20px;
+  background: linear-gradient(135deg, rgba(0,240,255,0.1) 0%, rgba(0,240,255,0.05) 100%);
+  border: 1px solid rgba(0,240,255,0.2);
+  border-radius: 12px;
+  color: var(--accent);
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: all var(--transition);
+  text-decoration: none;
+}
+.workink-btn:hover {
+  background: linear-gradient(135deg, rgba(0,240,255,0.15) 0%, rgba(0,240,255,0.08) 100%);
+  border-color: rgba(0,240,255,0.35);
+  box-shadow: 0 0 30px rgba(0,240,255,0.15);
+  transform: translateY(-1px);
+}
+.workink-btn:active { transform: translateY(0) scale(0.99); }
+.workink-btn svg { width: 18px; height: 18px; }
+.workink-btn .arrow-right { opacity: 0.6; }
+.workink-btn .workink-text { flex: 1; text-align: center; padding: 0 12px; }
+
+.workink-note {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  color: var(--text-subtle);
+  margin-top: 10px;
+}
+.workink-note svg { width: 12px; height: 12px; }
+
+.divider-text {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 1.5rem 0;
+  color: var(--text-subtle);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+.divider-text::before, .divider-text::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: rgba(255,255,255,0.06);
+}
+
+.cooldown-msg {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 12px;
+  padding: 10px;
+  background: rgba(255,171,0,0.08);
+  border: 1px solid rgba(255,171,0,0.2);
+  border-radius: var(--radius-xs);
+  color: var(--warning);
+  font-size: 0.8rem;
+  font-family: var(--font-mono);
+}
+.cooldown-msg.show { display: flex; }
+.cooldown-msg svg { width: 14px; height: 14px; }
+
+/* Spinner */
+.spinner {
+  width: 16px; height: 16px;
+  border: 2px solid rgba(0,0,0,0.2);
+  border-top-color: var(--bg-base);
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+.spinner.light {
+  border-color: rgba(255,255,255,0.2);
+  border-top-color: var(--text);
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Key Display */
+.success-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background: rgba(0,230,118,0.08);
+  border: 1px solid rgba(0,230,118,0.2);
+  border-radius: 999px;
+  font-size: 0.8rem;
+  color: var(--success);
+  margin-bottom: 1.5rem;
+}
+.success-badge svg { width: 14px; height: 14px; }
+
+.key-display {
+  background: rgba(0,240,255,0.03);
+  border: 1px solid rgba(0,240,255,0.1);
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  margin-bottom: 1.25rem;
+}
+.key-display .key-value {
+  font-family: var(--font-mono);
+  font-size: clamp(1rem, 2.5vw, 1.3rem);
+  font-weight: 500;
+  color: var(--text);
+  letter-spacing: 0.05em;
+  word-break: break-all;
+  line-height: 1.6;
+  transition: opacity 0.2s ease;
+}
+.key-display .key-value.changing { opacity: 0.3; }
+
+.endpoint-ref {
+  margin-top: 1.5rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xs);
+  overflow: hidden;
+}
+.endpoint-ref-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: rgba(255,255,255,0.02);
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition: background var(--transition);
+}
+.endpoint-ref-header:hover { background: rgba(255,255,255,0.04); }
+.endpoint-ref-header .header-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  color: var(--text);
+  font-weight: 500;
+}
+.endpoint-ref-header svg { width: 14px; height: 14px; transition: transform var(--transition); }
+.endpoint-ref.open .endpoint-ref-header svg.chevron { transform: rotate(180deg); }
+.endpoint-ref-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+.endpoint-ref.open .endpoint-ref-body { max-height: 400px; }
+.endpoint-ref-content { padding: 16px; }
+.endpoint-ref-content .label-caps { margin-bottom: 8px; display: block; }
+.code-block {
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xs);
+  padding: 14px;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--text);
+  overflow-x: auto;
+  position: relative;
+  white-space: pre;
+}
+.code-block .copy-endpoint-btn {
+  position: absolute;
+  top: 8px; right: 8px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all var(--transition);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.code-block .copy-endpoint-btn:hover { color: var(--text); border-color: var(--border-strong); }
+.code-block .copy-endpoint-btn svg { width: 12px; height: 12px; }
+
+.step-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 1.5rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   DASHBOARD
+   ═══════════════════════════════════════════════════════════════ */
+#dashboard { background: rgba(0,0,0,0.15); }
+.dashboard-flow { max-width: 560px; margin: 0 auto 4rem; }
+.dashboard-history { max-width: 900px; margin: 0 auto; }
+.history-divider {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 2rem;
+  color: var(--text-subtle);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+.history-divider::before,
+.history-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+}
+.dashboard-wrap {
+  max-width: 900px;
+  margin: 0 auto;
+}
+.keys-table-wrap {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.keys-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.keys-table thead th {
+  text-align: left;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--text-subtle);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(255,255,255,0.015);
+}
+.keys-table tbody tr {
+  border-bottom: 1px solid var(--border);
+  transition: background 0.15s ease;
+}
+.keys-table tbody tr:nth-child(even) { background: rgba(255,255,255,0.015); }
+.keys-table tbody tr:hover { background: rgba(255,255,255,0.03); }
+.keys-table tbody tr:last-child { border-bottom: none; }
+.keys-table td {
+  padding: 14px 16px;
+  font-size: 0.85rem;
+  color: var(--text);
+  vertical-align: middle;
+}
+.keys-table td.key-cell {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--text);
+}
+.keys-table td.id-cell {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.method-pill {
+  display: inline-block;
+  padding: 3px 10px;
+  background: rgba(0,240,255,0.08);
+  border: 1px solid rgba(0,240,255,0.2);
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: var(--accent);
+  font-family: var(--font-mono);
+}
+.status-cell {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+}
+.status-cell .status-dot-small {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+}
+.status-cell.active .status-dot-small { background: var(--success); box-shadow: 0 0 6px rgba(0,230,118,0.5); }
+.status-cell.active { color: var(--success); }
+.status-cell.revoked .status-dot-small { background: var(--error); }
+.status-cell.revoked { color: var(--error); }
+.row-actions {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+.icon-btn {
+  width: 28px; height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all var(--transition);
+}
+.icon-btn:hover { color: var(--text); border-color: var(--border-strong); }
+.icon-btn svg { width: 13px; height: 13px; }
+.icon-btn.danger:hover { color: var(--error); border-color: rgba(255,61,87,0.3); }
+
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+}
+.empty-state .empty-icon {
+  width: 64px; height: 64px;
+  color: rgba(255,255,255,0.05);
+  margin: 0 auto 16px;
+}
+.empty-state .empty-title {
+  color: var(--text-subtle);
+  font-size: 1rem;
+  margin-bottom: 6px;
+}
+.empty-state .empty-sub {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.dashboard-footer {
+  text-align: center;
+  margin-top: 1.5rem;
+}
+.confirm-inline {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+.confirm-inline.show { display: flex; }
+.confirm-inline .btn { padding: 6px 16px; font-size: 0.8rem; height: auto; }
+
+/* Mobile cards */
+@media (max-width: 720px) {
+  .keys-table-wrap { background: transparent; border: none; }
+  .keys-table, .keys-table thead, .keys-table tbody, .keys-table th, .keys-table td, .keys-table tr {
+    display: block;
+  }
+  .keys-table thead { display: none; }
+  .keys-table tbody tr {
+    background: var(--bg-card) !important;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    margin-bottom: 12px;
+    padding: 12px;
+  }
+  .keys-table tbody tr:hover { background: var(--bg-card) !important; }
+  .keys-table td {
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+  }
+  .keys-table td:last-child { border-bottom: none; }
+  .keys-table td::before {
+    content: attr(data-label);
+    font-size: 0.7rem;
+    color: var(--text-subtle);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 600;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   DOCUMENTATION
+   ═══════════════════════════════════════════════════════════════ */
+#documentation {
+  background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.3) 100%);
+}
+.docs-wrap {
+  max-width: 860px;
+  margin: 0 auto;
+}
+.endpoint-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-bottom: 20px;
+  transition: border-color var(--transition);
+}
+.endpoint-card:hover { border-color: var(--border-hover); }
+.endpoint-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(255,255,255,0.015);
+  flex-wrap: wrap;
+}
+.method-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+.method-badge.get { background: rgba(0,230,118,0.1); color: var(--success); border: 1px solid rgba(0,230,118,0.2); }
+.method-badge.post { background: rgba(0,240,255,0.1); color: var(--accent); border: 1px solid rgba(0,240,255,0.2); }
+.method-badge.delete { background: rgba(255,61,87,0.1); color: var(--error); border: 1px solid rgba(255,61,87,0.2); }
+.endpoint-path {
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  color: var(--text);
+  font-weight: 500;
+}
+.endpoint-tag {
+  margin-left: auto;
+  font-size: 0.7rem;
+  color: var(--text-subtle);
+  padding: 3px 8px;
+  background: rgba(255,255,255,0.04);
+  border-radius: 6px;
+  font-family: var(--font-mono);
+}
+.endpoint-body { padding: 20px; }
+.endpoint-desc {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin-bottom: 16px;
+  line-height: 1.7;
+}
+.params-title, .response-title {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-subtle);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 10px;
+  margin-top: 16px;
+}
+.params-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+.params-table th {
+  text-align: left;
+  padding: 8px 12px;
+  color: var(--text-subtle);
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-bottom: 1px solid var(--border);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.params-table td {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+}
+.params-table td:first-child { font-family: var(--font-mono); color: var(--accent); }
+.params-table td .req {
+  font-size: 0.7rem;
+  color: var(--warning);
+  margin-left: 6px;
+}
+.params-table tr:last-child td { border-bottom: none; }
+
+.code-block-doc {
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xs);
+  padding: 14px 16px;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  overflow-x: auto;
+  position: relative;
+  margin-top: 8px;
+}
+.code-block-doc .copy-code-btn {
+  position: absolute;
+  top: 8px; right: 8px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all var(--transition);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.code-block-doc .copy-code-btn:hover { color: var(--text); border-color: var(--border-strong); }
+.code-block-doc .copy-code-btn svg { width: 12px; height: 12px; }
+.code-block-doc pre { margin: 0; white-space: pre; }
+.code-block-doc .k { color: var(--accent); }
+.code-block-doc .s { color: var(--success); }
+.code-block-doc .b { color: var(--warning); }
+.code-block-doc .n { color: var(--text-muted); }
+.code-block-doc .c { color: var(--text-subtle); font-style: italic; }
+
+.response-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+  margin-top: 14px;
+}
+.response-label .code {
+  font-family: var(--font-mono);
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+.response-label .code.success { background: rgba(0,230,118,0.1); color: var(--success); }
+.response-label .code.error { background: rgba(255,61,87,0.1); color: var(--error); }
+
+/* ═══════════════════════════════════════════════════════════════
+   RAILWAY SECTION
+   ═══════════════════════════════════════════════════════════════ */
+#railway-section { background: rgba(0,0,0,0.2); }
+.railway-wrap {
+  max-width: 900px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  align-items: center;
+}
+.railway-info h3 { margin-bottom: 16px; }
+.railway-info p { color: var(--text-muted); margin-bottom: 20px; line-height: 1.7; }
+.railway-steps {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.railway-steps li {
+  display: flex;
+  gap: 12px;
+  font-size: 0.88rem;
+  color: var(--text);
+  line-height: 1.5;
+}
+.railway-steps li .step-num {
+  flex-shrink: 0;
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  background: rgba(0,240,255,0.1);
+  border: 1px solid rgba(0,240,255,0.3);
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+  font-family: var(--font-mono);
+}
+.railway-visual {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+}
+.railway-visual .term-header {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+.railway-visual .term-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+}
+.railway-visual .term-dot.red { background: #ff5f56; }
+.railway-visual .term-dot.yellow { background: #ffbd2e; }
+.railway-visual .term-dot.green { background: #27c93f; }
+.railway-visual .term-line {
+  color: var(--text-muted);
+  margin-bottom: 4px;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+.railway-visual .term-line .prompt { color: var(--accent); }
+.railway-visual .term-line .ok { color: var(--success); }
+.railway-visual .term-line .warn { color: var(--warning); }
+@media (max-width: 768px) {
+  .railway-wrap { grid-template-columns: 1fr; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   FOOTER
+   ═══════════════════════════════════════════════════════════════ */
+footer {
+  background: rgba(0,0,0,0.4);
+  border-top: 1px solid var(--border);
+  padding: 40px clamp(1.5rem, 4vw, 3rem);
+  position: relative;
+  z-index: 1;
+}
+.footer-inner {
+  max-width: 1180px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.footer-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.9rem;
+}
+.footer-brand .brand-icon { width: 22px; height: 22px; color: var(--accent); }
+.footer-brand .brand-name { font-weight: 700; }
+.footer-brand .brand-suffix { font-weight: 300; color: var(--text-muted); }
+.footer-center {
+  font-size: 0.78rem;
+  color: var(--text-subtle);
+  text-align: center;
+}
+.footer-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+.footer-right .workink-text {
+  font-weight: 600;
+  color: var(--accent);
+}
+@media (max-width: 600px) {
+  .footer-inner { flex-direction: column; text-align: center; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   TOASTS
+   ═══════════════════════════════════════════════════════════════ */
+#toast-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none;
+  max-width: calc(100vw - 40px);
+}
+.toast {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: rgba(12,12,16,0.95);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius-sm);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  min-width: 280px;
+  max-width: 380px;
+  pointer-events: auto;
+  animation: toastIn 0.3s ease-out;
+  position: relative;
+  overflow: hidden;
+}
+.toast.success { border-left-color: var(--success); }
+.toast.error { border-left-color: var(--error); }
+.toast.warning { border-left-color: var(--warning); }
+.toast.info { border-left-color: var(--accent); }
+.toast-icon {
+  width: 18px; height: 18px;
+  flex-shrink: 0;
+}
+.toast.success .toast-icon { color: var(--success); }
+.toast.error .toast-icon { color: var(--error); }
+.toast.warning .toast-icon { color: var(--warning); }
+.toast.info .toast-icon { color: var(--accent); }
+.toast-msg { font-size: 0.85rem; color: var(--text); flex: 1; line-height: 1.4; }
+.toast-close {
+  width: 18px; height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-subtle);
+  cursor: pointer;
+  transition: color var(--transition);
+  flex-shrink: 0;
+}
+.toast-close:hover { color: var(--text); }
+.toast-close svg { width: 14px; height: 14px; }
+.toast-progress {
+  position: absolute;
+  bottom: 0; left: 0;
+  height: 2px;
+  background: var(--accent);
+  animation: toastProgress 4s linear forwards;
+}
+.toast.success .toast-progress { background: var(--success); }
+.toast.error .toast-progress { background: var(--error); }
+.toast.warning .toast-progress { background: var(--warning); }
+@keyframes toastIn {
+  from { opacity: 0; transform: translateX(20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes toastProgress {
+  from { width: 100%; }
+  to { width: 0%; }
+}
+.toast.removing { animation: toastOut 0.25s ease forwards; }
+@keyframes toastOut {
+  to { opacity: 0; transform: translateX(20px); }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .scroll-indicator { animation: none; }
+  .hero-badge::after { animation: none; }
+  .status-dot { animation: none; }
+}
+
+/* Small screen tweaks */
+@media (max-width: 480px) {
+  .step-card { padding: 1.5rem 1.25rem; }
+  .step-number-bg { font-size: 4.5rem; right: 10px; }
+  .hero-cta { flex-direction: column; width: 100%; }
+  .hero-cta .btn { width: 100%; }
+  .step-actions { flex-direction: column; }
+  .step-actions .btn { width: 100%; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ PARTICLES CANVAS ═══ -->
+<canvas id="particles" aria-hidden="true"></canvas>
+
+<!-- ═══ BACKGROUND GEOMETRY ═══ -->
+<svg class="bg-geometry" viewBox="0 0 600 600" fill="none" aria-hidden="true">
+  <circle cx="300" cy="300" r="280" stroke="#00f0ff" stroke-width="1"/>
+  <circle cx="300" cy="300" r="220" stroke="#00f0ff" stroke-width="1"/>
+  <circle cx="300" cy="300" r="160" stroke="#00f0ff" stroke-width="1"/>
+  <circle cx="300" cy="300" r="100" stroke="#00f0ff" stroke-width="1"/>
+  <line x1="0" y1="300" x2="600" y2="300" stroke="#00f0ff" stroke-width="1"/>
+  <line x1="300" y1="0" x2="300" y2="600" stroke="#00f0ff" stroke-width="1"/>
+  <line x1="88" y1="88" x2="512" y2="512" stroke="#00f0ff" stroke-width="1"/>
+  <line x1="512" y1="88" x2="88" y2="512" stroke="#00f0ff" stroke-width="1"/>
+</svg>
+
+<!-- ═══ NAVBAR ═══ -->
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a href="#" class="nav-brand" aria-label="HolexSS Keysystem home">
+      <svg class="brand-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/>
+      </svg>
+      <span class="brand-name">HOLEXSS</span><span class="brand-suffix">KEY</span>
+    </a>
+    <div class="nav-center">
+      <a href="#dashboard" class="nav-link" data-target="dashboard">Dashboard</a>
+      <a href="#railway-section" class="nav-link" data-target="railway-section">Deploy</a>
+    </div>
+    <div class="nav-right">
+      <div class="status-badge" title="All systems operational">
+        <span class="status-dot"></span>
+        <span class="status-text">All Systems Operational</span>
+      </div>
+      <a href="#railway-section" class="btn-railway">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.27 15.58H6.46l8.32-7.9H8.53l.36-1.94h9.25l-8.36 7.91h5.85l-.36 1.93z"/></svg>
+        Deploy on Railway
+      </a>
+      <button class="nav-mobile-toggle" id="mobileToggle" aria-label="Toggle menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#dashboard" class="nav-link">Dashboard</a>
+  <a href="#railway-section" class="nav-link">Deploy</a>
+  <div class="status-badge">
+    <span class="status-dot"></span>
+    <span class="status-text">All Systems Operational</span>
+  </div>
+</div>
+
+<!-- ═══ HERO ═══ -->
+<section class="hero" id="hero">
+  <div class="hero-content reveal">
+    <div class="hero-badge">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+      v2.4 — Now with Railway Deployment
+    </div>
+    <h1>
+      <span class="line-1">Secure Key Verification</span>
+      <span class="line-2">Made Simple</span>
+    </h1>
+    <p class="hero-sub">
+      A link-gated key authentication system with Work.ink integration and one-click Railway deployment. Verify users, generate keys, and control access — all from a single interface.
+    </p>
+    <div class="hero-cta">
+      <a href="#dashboard" class="btn btn-primary btn-lg">
+        Get Started
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+      <a href="#railway-section" class="btn btn-secondary btn-lg">
+        Deploy on Railway
+      </a>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="num" id="statKeys">12,847</div>
+        <div class="lbl">Keys Generated</div>
+      </div>
+      <div class="hero-stat">
+        <div class="num">99.97%</div>
+        <div class="lbl">Uptime</div>
+      </div>
+      <div class="hero-stat">
+        <div class="num">&lt;1.2s</div>
+        <div class="lbl">Avg. Verification</div>
+      </div>
+    </div>
+  </div>
+  <div class="scroll-indicator" aria-hidden="true">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+  </div>
+</section>
+
+<!-- ═══ FEATURES STRIP ═══ -->
+<section class="features-strip">
+  <div class="features-grid reveal-stagger">
+    <div class="feature">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+      <div class="feature-title">Fraud Protection</div>
+      <div class="feature-desc">Work.ink gating prevents automated abuse</div>
+    </div>
+    <div class="feature">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      <div class="feature-title">Instant Keys</div>
+      <div class="feature-desc">Generated and delivered in under 2 seconds</div>
+    </div>
+    <div class="feature">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+      <div class="feature-title">Railway Ready</div>
+      <div class="feature-desc">One-click deploy to Railway infrastructure</div>
+    </div>
+    <div class="feature">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+      <div class="feature-title">REST API</div>
+      <div class="feature-desc">Clean endpoints for seamless integration</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ DASHBOARD (includes the 3-step key generation flow + key history) ═══ -->
+<section class="section" id="dashboard">
+  <div class="container">
+    <div class="section-header reveal">
+      <h2>Key Dashboard</h2>
+      <p>Complete the 3-step verification flow to generate your access key. All keys generated in this browser session are listed below.</p>
+    </div>
+
+    <!-- 3-Step Key Generation Flow -->
+    <div class="dashboard-flow reveal">
+      <!-- Stepper -->
+      <div class="stepper-wrap">
+        <div class="stepper-item" id="stepper-1">
+          <div class="step-circle">1</div>
+          <div class="step-label-text">Identifier</div>
+        </div>
+        <div class="step-line-2" id="line-1"></div>
+        <div class="stepper-item" id="stepper-2">
+          <div class="step-circle">2</div>
+          <div class="step-label-text">Verify</div>
+        </div>
+        <div class="step-line-2" id="line-2"></div>
+        <div class="stepper-item" id="stepper-3">
+          <div class="step-circle">3</div>
+          <div class="step-label-text">Key</div>
+        </div>
+      </div>
+
+      <!-- Step Card -->
+      <div class="step-card-wrap">
+        <div class="step-card">
+          <div class="step-number-bg" id="stepNumberBg">01</div>
+          <div class="step-content" id="stepContent">
+            <!-- Step content rendered by JS -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Key History -->
+    <div class="dashboard-history reveal">
+      <div class="history-divider">
+        <span>Your Key History</span>
+      </div>
+      <div class="dashboard-wrap">
+        <div id="dashboardContent">
+          <!-- Rendered by JS -->
+        </div>
+        <div class="dashboard-footer">
+          <button class="btn-text" id="clearAllBtn" style="display:none;">Clear All Keys</button>
+          <div class="confirm-inline" id="confirmClear">
+            <span>Are you sure?</span>
+            <button class="btn btn-ghost" id="confirmYesBtn" style="border-color: rgba(255,61,87,0.3); color: var(--error);">Yes, clear all</button>
+            <button class="btn btn-ghost" id="confirmNoBtn">No</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ RAILWAY SECTION ═══ -->
+<section class="section" id="railway-section">
+  <div class="container">
+    <div class="section-header reveal">
+      <h2>Deploy to Railway</h2>
+      <p>Ship the HolexSS Keysystem backend to production in under a minute.</p>
+    </div>
+    <div class="railway-wrap reveal">
+      <div class="railway-info">
+        <h3>One-Click Production</h3>
+        <p>The included <span class="mono accent">server.js</span> implements all five endpoints as a stateless Express service. Drop the folder into Railway, set your environment variables, and you have a fully operational key verification API.</p>
+        <ol class="railway-steps">
+          <li><span class="step-num">1</span><span>Fork or upload the project files to a GitHub repo.</span></li>
+          <li><span class="step-num">2</span><span>Create a new project on Railway and select "Deploy from GitHub repo".</span></li>
+          <li><span class="step-num">3</span><span>Set <span class="mono accent">KEY_PREFIX</span> and <span class="mono accent">WORKINK_SLUG</span> in Railway variables.</span></li>
+          <li><span class="step-num">4</span><span>Railway auto-detects Node.js and runs <span class="mono">npm start</span>. Your API is live.</span></li>
+        </ol>
+      </div>
+      <div class="railway-visual">
+        <div class="term-header">
+          <span class="term-dot red"></span>
+          <span class="term-dot yellow"></span>
+          <span class="term-dot green"></span>
+        </div>
+        <div class="term-line"><span class="prompt">$</span> railway up</div>
+        <div class="term-line">Detected Node.js project</div>
+        <div class="term-line">Building... <span class="ok">done</span></div>
+        <div class="term-line">Deploying... <span class="ok">done</span></div>
+        <div class="term-line">Service live at:</div>
+        <div class="term-line"><span class="ok">https://holexss.up.railway.app</span></div>
+        <div class="term-line">&nbsp;</div>
+        <div class="term-line"><span class="prompt">$</span> curl /Auth/health</div>
+        <div class="term-line">{</div>
+        <div class="term-line">  "status": "operational",</div>
+        <div class="term-line">  "deployment": "railway"</div>
+        <div class="term-line">}</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <svg class="brand-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/>
+      </svg>
+      <span class="brand-name">HOLEXSS</span><span class="brand-suffix">KEY</span>
+    </div>
+    <div class="footer-center">© 2026 HolexSS Keysystem. All rights reserved.</div>
+    <div class="footer-right">
+      Powered by <span class="workink-text">Work.ink</span>
+    </div>
+  </div>
+</footer>
+
+<!-- ═══ TOAST CONTAINER ═══ -->
+<div id="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+<script>
+'use strict';
+
+/* ═══════════════════════════════════════════════════════════════
+   CONFIG — Edit these values to customize your deployment
+   ═══════════════════════════════════════════════════════════════ */
+const CONFIG = {
+  workInkLink: "https://work.ink/YOUR_SLUG_HERE",   // ← Replace with your actual Work.ink link
+  keyPrefix: "HolexSS-",                              // ← Key prefix
+  keyLength: 16,                                       // ← Total key chars (excluding prefix & dashes)
+  verificationCooldown: 1800000,                      // ← 30 minutes in ms
+  websiteName: "HolexSS Keysystem 2026",
+  apiBaseUrl: "",                                      // ← Empty = same origin (frontend served by backend). Set to your Railway URL if hosting frontend separately.
+  maxKeysDisplayed: 10,
+};
+
+/* ═══════════════════════════════════════════════════════════════
+   STATE
+   ═══════════════════════════════════════════════════════════════ */
+const LS = {
+  identifier: "holexss_identifier",
+  workinkTs: "holexss_workink_timestamp",
+  step: "holexss_current_step",
+  keys: "holexss_keys",
+  stats: "holexss_stats_keys_generated",
+};
+
+let state = {
+  currentStep: 1,
+  identifier: "",
+  currentKey: "",
+  cooldownInterval: null,
+};
+
+/* ═══════════════════════════════════════════════════════════════
+   ICONS (inline SVG strings)
+   ═══════════════════════════════════════════════════════════════ */
+const ICONS = {
+  user: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
+  external: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>',
+  arrowRight: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>',
+  lock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>',
+  copy: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>',
+  check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
+  chevron: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>',
+  refresh: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>',
+  key: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>',
+  trash: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>',
+  success: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>',
+  error: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>',
+  warning: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>',
+  info: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>',
+  clock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
+  x: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>',
+};
+
+/* ═══════════════════════════════════════════════════════════════
+   PARTICLE SYSTEM
+   ═══════════════════════════════════════════════════════════════ */
+function initParticles() {
+  const canvas = document.getElementById('particles');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  let particles = [];
+  let width, height;
+
+  function resize() {
+    width = canvas.width = window.innerWidth;
+    height = canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  const PARTICLE_COUNT = Math.min(90, Math.floor(window.innerWidth * window.innerHeight / 18000));
+
+  for (let i = 0; i < PARTICLE_COUNT; i++) {
+    particles.push({
+      x: Math.random() * width,
+      y: Math.random() * height,
+      r: Math.random() * 1.2 + 0.5,
+      vy: Math.random() * 0.25 + 0.08,
+      vx: 0,
+      baseX: 0,
+      phase: Math.random() * Math.PI * 2,
+      phaseSpeed: Math.random() * 0.01 + 0.003,
+      amp: Math.random() * 0.6 + 0.2,
+      opacity: Math.random() * 0.25 + 0.15,
+    });
+    particles[i].baseX = particles[i].x;
+  }
+
+  function drawStatic() {
+    ctx.clearRect(0, 0, width, height);
+    particles.forEach(p => {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, Math.max(0.5, p.r), 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(0, 240, 255, ${p.opacity})`;
+      ctx.fill();
+    });
+  }
+
+  function drawAnimated() {
+    ctx.clearRect(0, 0, width, height);
+
+    particles.forEach(p => {
+      p.y -= p.vy;
+      p.phase += p.phaseSpeed;
+      p.x = p.baseX + Math.sin(p.phase) * 15 * p.amp;
+      if (p.y < -10) {
+        p.y = height + 10;
+        p.baseX = Math.random() * width;
+      }
+    });
+
+    // Draw connections
+    for (let i = 0; i < particles.length; i++) {
+      for (let j = i + 1; j < particles.length; j++) {
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        if (dist < 120) {
+          const alpha = (1 - dist / 120) * 0.04;
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.strokeStyle = `rgba(0, 240, 255, ${alpha})`;
+          ctx.lineWidth = 1;
+          ctx.stroke();
+        }
+      }
+    }
+
+    // Draw particles
+    particles.forEach(p => {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, Math.max(0.5, p.r), 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(0, 240, 255, ${p.opacity})`;
+      ctx.fill();
+    });
+
+    requestAnimationFrame(drawAnimated);
+  }
+
+  if (prefersReduced) {
+    drawStatic();
+  } else {
+    drawAnimated();
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   REVEAL ON SCROLL
+   ═══════════════════════════════════════════════════════════════ */
+function initReveals() {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+  document.querySelectorAll('.reveal, .reveal-stagger').forEach(el => observer.observe(el));
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   NAVBAR
+   ═══════════════════════════════════════════════════════════════ */
+function initNavbar() {
+  const navbar = document.getElementById('navbar');
+  const mobileToggle = document.getElementById('mobileToggle');
+  const mobileMenu = document.getElementById('mobileMenu');
+
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 50) navbar.classList.add('scrolled');
+    else navbar.classList.remove('scrolled');
+  });
+
+  mobileToggle.addEventListener('click', () => {
+    mobileMenu.classList.toggle('open');
+  });
+
+  document.querySelectorAll('.mobile-menu .nav-link').forEach(link => {
+    link.addEventListener('click', () => mobileMenu.classList.remove('open'));
+  });
+
+  // Active nav link based on scroll position
+  const sections = ['dashboard', 'railway-section'];
+  const navLinks = document.querySelectorAll('.nav-center .nav-link');
+
+  window.addEventListener('scroll', () => {
+    let active = '';
+    sections.forEach(id => {
+      const sec = document.getElementById(id);
+      if (sec) {
+        const rect = sec.getBoundingClientRect();
+        if (rect.top <= 100 && rect.bottom >= 100) active = id;
+      }
+    });
+    navLinks.forEach(link => {
+      link.classList.toggle('active', link.dataset.target === active);
+    });
+  });
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   KEY GENERATION
+   ═══════════════════════════════════════════════════════════════ */
+function generateKey(identifier) {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  const segments = [];
+  // Mix identifier hash into randomness for deterministic-but-unique seed
+  let seed = 0;
+  if (identifier) {
+    for (let i = 0; i < identifier.length; i++) {
+      seed = (seed * 31 + identifier.charCodeAt(i)) >>> 0;
+    }
+  }
+
+  function rand() {
+    if (window.crypto && window.crypto.getRandomValues) {
+      const arr = new Uint32Array(1);
+      window.crypto.getRandomValues(arr);
+      return arr[0] / 4294967296;
+    }
+    seed = (seed * 1103515245 + 12345) & 0x7fffffff;
+    return seed / 0x7fffffff;
+  }
+
+  for (let s = 0; s < 4; s++) {
+    let seg = '';
+    for (let i = 0; i < 4; i++) {
+      seg += chars[Math.floor(rand() * chars.length)];
+    }
+    segments.push(seg);
+  }
+  return CONFIG.keyPrefix + segments.join('-');
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   STEPPER UI
+   ═══════════════════════════════════════════════════════════════ */
+function updateStepper() {
+  for (let i = 1; i <= 3; i++) {
+    const item = document.getElementById('stepper-' + i);
+    const circle = item.querySelector('.step-circle');
+    item.classList.remove('active', 'completed');
+    circle.innerHTML = i;
+    if (i < state.currentStep) {
+      item.classList.add('completed');
+      circle.innerHTML = ICONS.check;
+      circle.style.background = 'var(--accent)';
+      circle.style.borderColor = 'var(--accent)';
+      circle.style.color = 'var(--bg-base)';
+    } else if (i === state.currentStep) {
+      item.classList.add('active');
+      circle.style.background = 'transparent';
+      circle.style.borderColor = 'var(--accent)';
+      circle.style.color = 'var(--accent)';
+    } else {
+      circle.style.background = 'transparent';
+      circle.style.borderColor = 'rgba(255,255,255,0.1)';
+      circle.style.color = 'var(--text-subtle)';
+    }
+  }
+  // Lines
+  document.getElementById('line-1').classList.toggle('active', state.currentStep >= 2);
+  document.getElementById('line-2').classList.toggle('active', state.currentStep >= 3);
+  // Background number
+  document.getElementById('stepNumberBg').textContent = String(state.currentStep).padStart(2, '0');
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   STEP RENDERING
+   ═══════════════════════════════════════════════════════════════ */
+function renderStep() {
+  const container = document.getElementById('stepContent');
+  container.classList.add('fade-out');
+
+  setTimeout(() => {
+    let html = '';
+    if (state.currentStep === 1) html = renderStep1();
+    else if (state.currentStep === 2) html = renderStep2();
+    else if (state.currentStep === 3) html = renderStep3();
+
+    container.innerHTML = html;
+    container.classList.remove('fade-out');
+    container.classList.add('fade-in');
+
+    // Attach step-specific listeners
+    if (state.currentStep === 1) attachStep1Listeners();
+    if (state.currentStep === 2) attachStep2Listeners();
+    if (state.currentStep === 3) attachStep3Listeners();
+
+    setTimeout(() => container.classList.remove('fade-in'), 300);
+  }, 200);
+
+  updateStepper();
+}
+
+function renderStep1() {
+  return `
+    <h3 class="step-heading">Enter Your Identifier</h3>
+    <p class="step-subtext">Provide your Discord User ID or username to associate with your key.</p>
+    <div class="input-wrap">
+      <input type="text" class="input-field" id="identifierInput"
+        placeholder="e.g. 123456789012345678 or username"
+        maxlength="40" autocomplete="off" spellcheck="false"
+        aria-label="Discord User ID or username"
+        value="${escapeHtml(state.identifier)}">
+      <span class="input-icon">${ICONS.user}</span>
+    </div>
+    <div class="input-error-msg" id="idErrorMsg">Please enter a valid identifier (at least 3 characters).</div>
+    <div class="input-info">Your identifier is stored locally and used to associate keys with your account.</div>
+    <button class="btn btn-primary btn-lg btn-block" id="continueBtn" ${state.identifier.length >= 3 ? '' : 'disabled'} style="margin-top: 1.5rem;">
+      Continue
+      ${ICONS.arrowRight}
+    </button>
+  `;
+}
+
+function renderStep2() {
+  const remaining = getRemainingCooldown();
+  const inCooldown = remaining > 0;
+  return `
+    <h3 class="step-heading">Complete Verification</h3>
+    <p class="step-subtext">To prevent automated abuse and ensure fair access, complete one short task. This keeps the system free for everyone.</p>
+    <a href="${CONFIG.workInkLink}" target="_blank" rel="noopener noreferrer" class="workink-btn" id="workinkBtn">
+      ${ICONS.external}
+      <span class="workink-text">Complete Task on Work.ink</span>
+      <span class="arrow-right">${ICONS.arrowRight}</span>
+    </a>
+    <div class="workink-note">
+      ${ICONS.lock}
+      <span>Opens in a new tab. Your data stays private.</span>
+    </div>
+    <div class="divider-text">then</div>
+    <button class="btn btn-secondary btn-lg btn-block" id="verifyBtn">
+      <span id="verifyBtnContent">I Have Completed the Task</span>
+    </button>
+    <div class="cooldown-msg" id="cooldownMsg" ${inCooldown ? 'style="display:flex"' : ''}>
+      ${ICONS.clock}
+      <span>Verification cooldown active. Next attempt in: <span id="cooldownTime">${formatMs(remaining)}</span></span>
+    </div>
+  `;
+}
+
+function renderStep3() {
+  if (!state.currentKey) {
+    state.currentKey = generateKey(state.identifier);
+    saveKeyToHistory(state.currentKey, state.identifier);
+  }
+  return `
+    <div class="success-badge">
+      ${ICONS.check}
+      Verified via Work.ink
+    </div>
+    <h3 class="step-heading">Your Key Is Ready</h3>
+    <p class="step-subtext">Verification complete. Your access key has been generated.</p>
+    <div class="key-display">
+      <div class="key-value" id="keyValue">${escapeHtml(state.currentKey)}</div>
+    </div>
+    <div style="text-align:center;">
+      <button class="btn btn-ghost" id="copyKeyBtn" style="margin-bottom: 0.5rem;">
+        ${ICONS.copy}
+        <span>Copy Key</span>
+      </button>
+    </div>
+    <div class="endpoint-ref" id="endpointRef">
+      <div class="endpoint-ref-header" id="endpointRefHeader">
+        <div class="header-left">
+          ${ICONS.info}
+          <span>How to use this key</span>
+        </div>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="endpoint-ref-body">
+        <div class="endpoint-ref-content">
+          <span class="label-caps">Verification Endpoint</span>
+          <div class="code-block">
+            <button class="copy-endpoint-btn" id="copyEndpointBtn">${ICONS.copy}<span>Copy</span></button>
+            <span id="endpointCode">GET ${CONFIG.apiBaseUrl}/Auth/workink?key=${escapeHtml(state.currentKey)}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="step-actions">
+      <button class="btn btn-secondary" id="generateAnotherBtn">
+        ${ICONS.refresh}
+        Generate Another Key
+      </button>
+      <button class="btn-text" id="startOverBtn">Start Over</button>
+    </div>
+  `;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   STEP LISTENERS
+   ═══════════════════════════════════════════════════════════════ */
+function attachStep1Listeners() {
+  const input = document.getElementById('identifierInput');
+  const btn = document.getElementById('continueBtn');
+  const errorMsg = document.getElementById('idErrorMsg');
+
+  input.addEventListener('input', () => {
+    state.identifier = input.value;
+    input.classList.remove('error');
+    errorMsg.classList.remove('show');
+    btn.disabled = input.value.trim().length < 3;
+  });
+
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !btn.disabled) btn.click();
+  });
+
+  btn.addEventListener('click', () => {
+    if (state.identifier.trim().length < 3) {
+      input.classList.add('error');
+      errorMsg.classList.add('show');
+      return;
+    }
+    state.identifier = state.identifier.trim();
+    localStorage.setItem(LS.identifier, state.identifier);
+    state.currentStep = 2;
+    localStorage.setItem(LS.step, '2');
+    renderStep();
+    showToast('Identifier saved', 'success');
+  });
+
+  setTimeout(() => input.focus(), 250);
+}
+
+function attachStep2Listeners() {
+  const verifyBtn = document.getElementById('verifyBtn');
+  const verifyContent = document.getElementById('verifyBtnContent');
+  const cooldownMsg = document.getElementById('cooldownMsg');
+  const cooldownTime = document.getElementById('cooldownTime');
+
+  // If already in cooldown, advance immediately
+  const remaining = getRemainingCooldown();
+  if (remaining > 0) {
+    // Already verified within cooldown — auto-advance
+    setTimeout(() => {
+      state.currentStep = 3;
+      localStorage.setItem(LS.step, '3');
+      renderStep();
+    }, 600);
+    return;
+  }
+
+  verifyBtn.addEventListener('click', () => {
+    // Check cooldown (shouldn't happen but safety)
+    const rem = getRemainingCooldown();
+    if (rem > 0) {
+      showCooldown(rem);
+      return;
+    }
+
+    // Simulate verification
+    verifyBtn.disabled = true;
+    verifyContent.innerHTML = `<span class="spinner light"></span> Verifying...`;
+
+    setTimeout(() => {
+      // Save timestamp
+      localStorage.setItem(LS.workinkTs, Date.now().toString());
+      state.currentStep = 3;
+      localStorage.setItem(LS.step, '3');
+      renderStep();
+      showToast('Verification complete', 'success');
+    }, 2500);
+  });
+
+  function showCooldown(ms) {
+    verifyBtn.disabled = true;
+    verifyContent.textContent = 'Please Wait...';
+    cooldownMsg.style.display = 'flex';
+    if (state.cooldownInterval) clearInterval(state.cooldownInterval);
+    state.cooldownInterval = setInterval(() => {
+      const r = getRemainingCooldown();
+      if (r <= 0) {
+        clearInterval(state.cooldownInterval);
+        state.cooldownInterval = null;
+        verifyBtn.disabled = false;
+        verifyContent.textContent = 'I Have Completed the Task';
+        cooldownMsg.style.display = 'none';
+      } else {
+        cooldownTime.textContent = formatMs(r);
+      }
+    }, 1000);
+  }
+}
+
+function attachStep3Listeners() {
+  // Copy key
+  const copyKeyBtn = document.getElementById('copyKeyBtn');
+  copyKeyBtn.addEventListener('click', async () => {
+    const ok = await copyToClipboard(state.currentKey);
+    if (ok) {
+      copyKeyBtn.innerHTML = `${ICONS.check}<span>Copied!</span>`;
+      copyKeyBtn.style.borderColor = 'rgba(0,230,118,0.3)';
+      copyKeyBtn.style.color = 'var(--success)';
+      showToast('Key copied to clipboard', 'success');
+      setTimeout(() => {
+        copyKeyBtn.innerHTML = `${ICONS.copy}<span>Copy Key</span>`;
+        copyKeyBtn.style.borderColor = '';
+        copyKeyBtn.style.color = '';
+      }, 2500);
+    } else {
+      showToast('Failed to copy — please copy manually', 'error');
+    }
+  });
+
+  // Copy endpoint
+  const copyEndpointBtn = document.getElementById('copyEndpointBtn');
+  if (copyEndpointBtn) {
+    copyEndpointBtn.addEventListener('click', async () => {
+      const endpoint = `GET ${CONFIG.apiBaseUrl}/Auth/workink?key=${state.currentKey}`;
+      const ok = await copyToClipboard(endpoint);
+      if (ok) {
+        copyEndpointBtn.innerHTML = `${ICONS.check}<span>Copied</span>`;
+        showToast('Endpoint copied', 'success');
+        setTimeout(() => {
+          copyEndpointBtn.innerHTML = `${ICONS.copy}<span>Copy</span>`;
+        }, 2000);
+      }
+    });
+  }
+
+  // Toggle endpoint ref
+  const endpointRef = document.getElementById('endpointRef');
+  const endpointHeader = document.getElementById('endpointRefHeader');
+  endpointHeader.addEventListener('click', () => {
+    endpointRef.classList.toggle('open');
+  });
+
+  // Generate another
+  const genBtn = document.getElementById('generateAnotherBtn');
+  genBtn.addEventListener('click', () => {
+    const keyDisplay = document.getElementById('keyValue');
+    keyDisplay.classList.add('changing');
+    setTimeout(() => {
+      state.currentKey = generateKey(state.identifier);
+      saveKeyToHistory(state.currentKey, state.identifier);
+      keyDisplay.textContent = state.currentKey;
+      const endpointCode = document.getElementById('endpointCode');
+      if (endpointCode) endpointCode.textContent = `GET ${CONFIG.apiBaseUrl}/Auth/workink?key=${state.currentKey}`;
+      keyDisplay.classList.remove('changing');
+      showToast('New key generated', 'success');
+      renderDashboard();
+    }, 200);
+  });
+
+  // Start over
+  const startOverBtn = document.getElementById('startOverBtn');
+  startOverBtn.addEventListener('click', () => {
+    resetFlow();
+    showToast('Session reset', 'info');
+  });
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   COOLDOWN HELPERS
+   ═══════════════════════════════════════════════════════════════ */
+function getRemainingCooldown() {
+  const ts = parseInt(localStorage.getItem(LS.workinkTs) || '0', 10);
+  if (!ts) return 0;
+  const elapsed = Date.now() - ts;
+  return Math.max(0, CONFIG.verificationCooldown - elapsed);
+}
+
+function formatMs(ms) {
+  const totalSec = Math.ceil(ms / 1000);
+  const m = Math.floor(totalSec / 60);
+  const s = totalSec % 60;
+  return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   KEY HISTORY
+   ═══════════════════════════════════════════════════════════════ */
+function getKeys() {
+  try {
+    return JSON.parse(localStorage.getItem(LS.keys) || '[]');
+  } catch (e) { return []; }
+}
+
+function saveKeyToHistory(key, identifier) {
+  const keys = getKeys();
+  keys.unshift({
+    key,
+    identifier,
+    method: 'workink',
+    generated_at: new Date().toISOString(),
+    status: 'active',
+  });
+  // Keep only last 50 in storage, display last 10
+  if (keys.length > 50) keys.length = 50;
+  localStorage.setItem(LS.keys, JSON.stringify(keys));
+  // Bump stats
+  bumpStats();
+  renderDashboard();
+}
+
+function bumpStats() {
+  const cur = parseInt(localStorage.getItem(LS.stats) || '12847', 10);
+  const next = cur + 1;
+  localStorage.setItem(LS.stats, next.toString());
+  const el = document.getElementById('statKeys');
+  if (el) el.textContent = next.toLocaleString();
+}
+
+function renderDashboard() {
+  const container = document.getElementById('dashboardContent');
+  const clearBtn = document.getElementById('clearAllBtn');
+  const keys = getKeys().slice(0, CONFIG.maxKeysDisplayed);
+
+  if (keys.length === 0) {
+    container.innerHTML = `
+      <div class="keys-table-wrap">
+        <div class="empty-state">
+          <div class="empty-icon">${ICONS.key}</div>
+          <div class="empty-title">No keys generated yet</div>
+          <div class="empty-sub">Complete the verification above to get started.</div>
+        </div>
+      </div>
+    `;
+    clearBtn.style.display = 'none';
+    return;
+  }
+
+  clearBtn.style.display = 'inline-block';
+
+  const rows = keys.map(k => {
+    const keyShort = k.key.length > 24 ? k.key.substring(0, 24) + '...' : k.key;
+    const idShort = k.identifier.length > 18 ? k.identifier.substring(0, 18) + '...' : k.identifier;
+    const isActive = k.status === 'active';
+    return `
+      <tr data-key="${escapeHtml(k.key)}">
+        <td data-label="Key" class="key-cell">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span title="${escapeHtml(k.key)}">${escapeHtml(keyShort)}</span>
+            <button class="icon-btn" data-action="copy" data-key="${escapeHtml(k.key)}" aria-label="Copy key">${ICONS.copy}</button>
+          </div>
+        </td>
+        <td data-label="Identifier" class="id-cell" title="${escapeHtml(k.identifier)}">${escapeHtml(idShort)}</td>
+        <td data-label="Method"><span class="method-pill">Work.ink</span></td>
+        <td data-label="Generated" class="id-cell">${formatRelative(k.generated_at)}</td>
+        <td data-label="Status">
+          <div class="status-cell ${isActive ? 'active' : 'revoked'}">
+            <span class="status-dot-small"></span>
+            <span>${isActive ? 'Active' : 'Revoked'}</span>
+          </div>
+        </td>
+        <td data-label="Actions">
+          <div class="row-actions">
+            ${isActive ? `<button class="icon-btn danger" data-action="revoke" data-key="${escapeHtml(k.key)}" aria-label="Revoke key">${ICONS.trash}</button>` : '<span style="color:var(--text-subtle);font-size:0.75rem;">—</span>'}
+          </div>
+        </td>
+      </tr>
+    `;
+  }).join('');
+
+  container.innerHTML = `
+    <div class="keys-table-wrap">
+      <table class="keys-table">
+        <thead>
+          <tr>
+            <th>Key</th>
+            <th>Identifier</th>
+            <th>Method</th>
+            <th>Generated</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>
+  `;
+
+  // Attach action listeners
+  container.querySelectorAll('[data-action]').forEach(btn => {
+    btn.addEventListener('click', async (e) => {
+      const action = btn.dataset.action;
+      const key = btn.dataset.key;
+      if (action === 'copy') {
+        const ok = await copyToClipboard(key);
+        showToast(ok ? 'Key copied' : 'Copy failed', ok ? 'success' : 'error');
+      } else if (action === 'revoke') {
+        revokeKey(key);
+      }
+    });
+  });
+}
+
+function revokeKey(key) {
+  const keys = getKeys();
+  const found = keys.find(k => k.key === key);
+  if (found) {
+    found.status = 'revoked';
+    found.revoked_at = new Date().toISOString();
+    localStorage.setItem(LS.keys, JSON.stringify(keys));
+    renderDashboard();
+    showToast('Key revoked successfully', 'success');
+  }
+}
+
+function initClearAll() {
+  const clearBtn = document.getElementById('clearAllBtn');
+  const confirmDiv = document.getElementById('confirmClear');
+  const yesBtn = document.getElementById('confirmYesBtn');
+  const noBtn = document.getElementById('confirmNoBtn');
+
+  clearBtn.addEventListener('click', () => {
+    clearBtn.style.display = 'none';
+    confirmDiv.classList.add('show');
+  });
+
+  noBtn.addEventListener('click', () => {
+    confirmDiv.classList.remove('show');
+    clearBtn.style.display = 'inline-block';
+  });
+
+  yesBtn.addEventListener('click', () => {
+    localStorage.removeItem(LS.keys);
+    confirmDiv.classList.remove('show');
+    renderDashboard();
+    showToast('All keys cleared', 'info');
+  });
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   RESET FLOW
+   ═══════════════════════════════════════════════════════════════ */
+function resetFlow() {
+  state.currentStep = 1;
+  state.identifier = '';
+  state.currentKey = '';
+  localStorage.removeItem(LS.identifier);
+  localStorage.removeItem(LS.workinkTs);
+  localStorage.removeItem(LS.step);
+  renderStep();
+  renderDashboard();
+  // Scroll to key system
+  document.getElementById('key-system').scrollIntoView({ behavior: 'smooth' });
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   DOCUMENTATION
+   ═══════════════════════════════════════════════════════════════ */
+function renderDocs() {
+  const wrap = document.getElementById('docsWrap');
+  const endpoints = [
+    {
+      method: 'POST',
+      path: '/Auth/generate',
+      tag: 'Internal',
+      desc: 'Internal endpoint for registering a new key after Work.ink verification has been completed on the client. The server generates the key, stores the record, and returns the full key object.',
+      params: [
+        { name: 'identifier', type: 'string', req: true, desc: 'Discord User ID or username to associate with the key' },
+        { name: 'method', type: 'string', req: false, desc: 'Verification method. Defaults to "workink".' },
+      ],
+      responses: [
+        {
+          code: '201', label: 'Created', type: 'success',
+          body: `{
+  "key": "HolexSS-A7K2-M9X1-P4L8-Q3W6",
+  "identifier": "123456789012345678",
+  "method": "workink",
+  "generated_at": "2026-01-15T14:30:00.000Z",
+  "status": "active"
+}`
+        },
+        {
+          code: '400', label: 'Bad Request', type: 'error',
+          body: `{
+  "error": "Missing identifier"
+}`
+        },
+        {
+          code: '429', label: 'Rate Limited', type: 'error',
+          body: `{
+  "error": "Rate limit exceeded. Try again in 60s."
+}`
+        },
+      ],
+    },
+    {
+      method: 'GET',
+      path: '/Auth/verify',
+      tag: 'Public',
+      desc: 'Verifies if a provided key is valid and active. Use this for general key checks where the verification method does not matter.',
+      params: [
+        { name: 'key', type: 'string', req: true, desc: 'The access key to verify' },
+      ],
+      responses: [
+        {
+          code: '200', label: 'OK', type: 'success',
+          body: `{
+  "valid": true,
+  "key": "HolexSS-A7K2-M9X1-P4L8-Q3W6",
+  "identifier": "123456789012345678",
+  "method": "workink",
+  "generated_at": "2026-01-15T14:30:00.000Z",
+  "status": "active"
+}`
+        },
+        {
+          code: '404', label: 'Not Found', type: 'error',
+          body: `{
+  "valid": false,
+  "error": "Key not found or has been revoked."
+}`
+        },
+        {
+          code: '400', label: 'Bad Request', type: 'error',
+          body: `{
+  "valid": false,
+  "error": "Missing required parameter: key"
+}`
+        },
+      ],
+    },
+    {
+      method: 'GET',
+      path: '/Auth/workink',
+      tag: 'Primary',
+      desc: 'Verifies a key that was generated through the Work.ink verification flow. This endpoint is specifically for keys obtained via the Work.ink gate. Performs the same validation as /Auth/verify but also tags the response with the verification method and Railway deployment status.',
+      params: [
+        { name: 'key', type: 'string', req: true, desc: 'The Work.ink-verified key' },
+      ],
+      responses: [
+        {
+          code: '200', label: 'OK', type: 'success',
+          body: `{
+  "valid": true,
+  "verification_method": "workink",
+  "railway_deployment": true,
+  "key": "HolexSS-A7K2-M9X1-P4L8-Q3W6",
+  "identifier": "123456789012345678",
+  "method": "workink",
+  "generated_at": "2026-01-15T14:30:00.000Z",
+  "status": "active"
+}`
+        },
+        {
+          code: '403', label: 'Forbidden', type: 'error',
+          body: `{
+  "valid": false,
+  "error": "Key verification method mismatch. Expected: workink."
+}`
+        },
+        {
+          code: '404', label: 'Not Found', type: 'error',
+          body: `{
+  "valid": false,
+  "error": "Key not found, expired, or revoked."
+}`
+        },
+      ],
+    },
+    {
+      method: 'DELETE',
+      path: '/Auth/revoke',
+      tag: 'Admin',
+      desc: 'Revokes an active key. Once revoked, the key will fail all verification checks. This action is irreversible.',
+      params: [
+        { name: 'key', type: 'string', req: true, desc: 'The key to revoke' },
+      ],
+      responses: [
+        {
+          code: '200', label: 'OK', type: 'success',
+          body: `{
+  "revoked": true,
+  "key": "HolexSS-A7K2-M9X1-P4L8-Q3W6",
+  "revoked_at": "2026-01-15T15:00:00.000Z"
+}`
+        },
+        {
+          code: '404', label: 'Not Found', type: 'error',
+          body: `{
+  "error": "Key not found"
+}`
+        },
+      ],
+    },
+    {
+      method: 'GET',
+      path: '/Auth/health',
+      tag: 'Status',
+      desc: 'Returns service health and runtime metrics. Use this for uptime monitoring, Railway deployment verification, and load balancer health checks.',
+      params: [],
+      responses: [
+        {
+          code: '200', label: 'OK', type: 'success',
+          body: `{
+  "status": "operational",
+  "version": "2.4.0",
+  "deployment": "railway",
+  "railway_environment": "production",
+  "total_keys": 12847,
+  "active_keys": 12821,
+  "uptime_seconds": 86423
+}`
+        },
+      ],
+    },
+  ];
+
+  wrap.innerHTML = endpoints.map(ep => `
+    <div class="endpoint-card">
+      <div class="endpoint-top">
+        <span class="method-badge ${ep.method.toLowerCase()}">${ep.method}</span>
+        <span class="endpoint-path">${ep.path}</span>
+        ${ep.tag ? `<span class="endpoint-tag">${ep.tag}</span>` : ''}
+      </div>
+      <div class="endpoint-body">
+        <p class="endpoint-desc">${ep.desc}</p>
+        ${ep.params.length > 0 ? `
+          <div class="params-title">Parameters</div>
+          <table class="params-table">
+            <thead>
+              <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+              ${ep.params.map(p => `
+                <tr>
+                  <td>${p.name}${p.req ? '<span class="req">required</span>' : ''}</td>
+                  <td>${p.type}</td>
+                  <td>${p.desc}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        ` : '<div class="params-title">Parameters</div><p style="color:var(--text-muted);font-size:0.85rem;">None</p>'}
+
+        ${ep.responses.map(r => `
+          <div class="response-label">
+            <span class="code ${r.type}">${r.code}</span>
+            <span>${r.label}</span>
+          </div>
+          <div class="code-block-doc">
+            <button class="copy-code-btn" data-code="${escapeAttr(r.body)}">${ICONS.copy}<span>Copy</span></button>
+            <pre>${syntaxHighlight(r.body)}</pre>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `).join('');
+
+  // Attach copy listeners
+  wrap.querySelectorAll('.copy-code-btn').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const code = btn.dataset.code;
+      const ok = await copyToClipboard(code);
+      if (ok) {
+        btn.innerHTML = `${ICONS.check}<span>Copied</span>`;
+        showToast('Code copied', 'success');
+        setTimeout(() => { btn.innerHTML = `${ICONS.copy}<span>Copy</span>`; }, 2000);
+      }
+    });
+  });
+}
+
+function syntaxHighlight(json) {
+  // json is already pretty-printed; wrap tokens with spans
+  return escapeHtml(json)
+    .replace(/("(?:[^"\\]|\\.)*")(\s*:)/g, '<span class="k">$1</span>$2')
+    .replace(/:\s*("(?:[^"\\]|\\.)*")/g, ': <span class="s">$1</span>')
+    .replace(/:\s*(true|false)/g, ': <span class="b">$1</span>')
+    .replace(/:\s*(null)/g, ': <span class="n">$1</span>')
+    .replace(/:\s*(-?\d+\.?\d*)/g, ': <span class="b">$1</span>');
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   TOAST SYSTEM
+   ═══════════════════════════════════════════════════════════════ */
+function showToast(message, type = 'info') {
+  const container = document.getElementById('toast-container');
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  toast.setAttribute('role', 'status');
+
+  const icon = ICONS[type] || ICONS.info;
+  toast.innerHTML = `
+    <span class="toast-icon">${icon}</span>
+    <span class="toast-msg">${escapeHtml(message)}</span>
+    <button class="toast-close" aria-label="Dismiss">${ICONS.x}</button>
+    <div class="toast-progress"></div>
+  `;
+
+  container.appendChild(toast);
+
+  let removed = false;
+  function remove() {
+    if (removed) return;
+    removed = true;
+    toast.classList.add('removing');
+    setTimeout(() => toast.remove(), 250);
+  }
+
+  toast.querySelector('.toast-close').addEventListener('click', remove);
+  setTimeout(remove, 4000);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   CLIPBOARD
+   ═══════════════════════════════════════════════════════════════ */
+async function copyToClipboard(text) {
+  try {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(text);
+      return true;
+    }
+  } catch (e) { /* fall through */ }
+
+  // Fallback
+  try {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.top = '-9999px';
+    ta.style.left = '-9999px';
+    document.body.appendChild(ta);
+    ta.select();
+    const ok = document.execCommand('copy');
+    document.body.removeChild(ta);
+    return ok;
+  } catch (e) {
+    return false;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   HELPERS
+   ═══════════════════════════════════════════════════════════════ */
+function escapeHtml(s) {
+  if (s == null) return '';
+  return String(s).replace(/[&<>"']/g, c => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  }[c]));
+}
+function escapeAttr(s) { return escapeHtml(s); }
+
+function formatRelative(iso) {
+  const d = new Date(iso);
+  const now = new Date();
+  const diff = Math.floor((now - d) / 1000);
+  if (diff < 60) return 'just now';
+  if (diff < 3600) return `${Math.floor(diff/60)} min ago`;
+  if (diff < 86400) return `${Math.floor(diff/3600)} hr ago`;
+  if (diff < 604800) return `${Math.floor(diff/86400)} days ago`;
+  return d.toLocaleDateString();
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   INIT
+   ═══════════════════════════════════════════════════════════════ */
+function init() {
+  // Restore state
+  state.identifier = localStorage.getItem(LS.identifier) || '';
+  const savedStep = parseInt(localStorage.getItem(LS.step) || '1', 10);
+  const workinkTs = parseInt(localStorage.getItem(LS.workinkTs) || '0', 10);
+
+  // If verification was completed within cooldown, jump to step 3
+  if (workinkTs && (Date.now() - workinkTs) < CONFIG.verificationCooldown) {
+    state.currentStep = 3;
+  } else if (savedStep === 3 && state.identifier) {
+    state.currentStep = 3;
+  } else if (savedStep === 2 && state.identifier) {
+    state.currentStep = 2;
+  } else {
+    state.currentStep = 1;
+  }
+
+  // Stats
+  const savedStats = parseInt(localStorage.getItem(LS.stats) || '12847', 10);
+  const statEl = document.getElementById('statKeys');
+  if (statEl) statEl.textContent = savedStats.toLocaleString();
+
+  initParticles();
+  initReveals();
+  initNavbar();
+  initClearAll();
+  renderStep();
+  renderDashboard();
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
+}
+</script>
+</body>
+</html>
